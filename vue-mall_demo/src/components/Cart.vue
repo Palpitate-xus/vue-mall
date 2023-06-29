@@ -23,7 +23,7 @@
     <div class="cart-summary">
       <div>总数量: {{ totalItems }}</div>
       <div>总价格: {{ totalPrice }}</div>
-      <el-button type="primary">结算</el-button>
+      <el-button type="primary" @click="checkout">结算</el-button>
     </div>
   </div>
 </template>
@@ -73,6 +73,9 @@ export default {
       if (index !== -1) {
         this.cartItems.splice(index, 1);
       }
+    },
+    checkout() {
+      this.$router.push('./checkout');
     }
   }
 };

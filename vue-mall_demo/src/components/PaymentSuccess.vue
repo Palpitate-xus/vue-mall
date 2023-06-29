@@ -7,7 +7,7 @@
                     <p>订单ID: {{ orderId }}</p>
                     <p>支付金额: {{ paymentAmount }}</p>
                 </div>
-                <el-button type="primary" size="medium">返回</el-button>
+                <el-button type="primary" size="medium" @click="$router.push('/cart')">返回</el-button>
             </template>
          </el-result>
     </div>

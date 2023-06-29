@@ -16,21 +16,7 @@
   <script>
   export default {
     name: 'PaymentSuccess',
-    computed: {
-      orderId() {
-        // Get order ID from the route or vuex store
-        return this.$route.params.orderId; // Assuming order ID is passed as a route parameter
-        // Alternatively, you can retrieve it from the vuex store
-        // return this.$store.state.order.orderId;
-      },
-      paymentAmount() {
-        // Get payment amount from the route or vuex store
-        return this.$route.params.paymentAmount; // Assuming payment amount is passed as a route parameter
-        // Alternatively, you can retrieve it from the vuex store
-        // return this.$store.state.order.paymentAmount;
-      },
-    },
-  };
+  }
   </script>
   
   <style scoped>

@@ -16,6 +16,12 @@
   <script>
   export default {
     name: 'PaymentSuccess',
+    data() {
+        return {
+            orderId: 'testOrderID',
+            paymentAmount: '$69.97'
+        }
+    }
   }
   </script>
   

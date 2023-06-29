@@ -27,14 +27,40 @@
                 <div class="product-name">{{ product.name }}</div>
                 <div class="product-price">{{ product.price }}</div>
                 <div class="product-actions">
-                  <el-button type="primary" icon="el-icon-shopping-cart-2">加入购物车</el-button>
-                  <el-button type="text" icon="el-icon-star-on">加入愿望单</el-button>
+                      <el-button
+                        type="primary"
+                        icon="el-icon-shopping-cart-2"
+                        @click="showInfo"
+                      >加入购物车</el-button>
+                  <el-button
+                    type="text"
+                    icon="el-icon-star-on"
+                    @click="addToWishlist"
+                  >{{ wishlistButton }}</el-button>
                 </div>
               </div>
             </el-card>
           </el-col>
         </el-row>
       </div>
+      <el-dialog title="商品详情" :visible.sync="dialogVisible" width="45%">
+      <div class="product-details">
+        <div class="product-info">
+          <img :src="product.imageUrl" :alt="product.name" class="product-image" />
+          <div class="product-details-info">
+            <h3>{{ product.name }}</h3>
+            <p>{{ product.description }}</p>
+            <p>Price: ${{ product.price }}</p>
+            <el-input-number v-model="quantity" :min="1" :max="10" :step="1"></el-input-number>
+          </div>
+        </div>
+      </div>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="addToCart">加入购物车</el-button>
+        <el-button @click="dialogVisible = false">返回</el-button>
+      </div>
+    </el-dialog>
     </div>
   </template>
   
@@ -43,6 +69,15 @@
     name: 'MallIndex',
     data() {
       return {
+        dialogVisible: false,
+        wishlistButton: '加入愿望单',
+        product: {
+        name: 'Product 1',
+        description: 'Product description',
+        price: 29.99,
+        imageUrl: 'https://img20.360buyimg.com/seckillcms/s280x280_jfs/t20260619/113833/3/39445/53972/64914cffF631562d4/4be78f2804813246.png.avif',
+        },
+      quantity: 1,
         slides: [
           {
             id: 1,
@@ -94,8 +129,39 @@
           },
           // Add more recommended products here...
         ],
-        announcement: '这是一条测试公告'
       };
+    },
+    methods: {
+      showInfo() {
+        this.dialogVisible = true;
+        console.log(this.visible);
+      },
+      addToCart(item) {
+        this.$message({
+          message: '加入购物车成功',
+          type: 'success'
+        });
+        this.dialogVisible = false;
+      },
+      addToWishlist(item) {
+        if(this.wishlistButton == '加入愿望单')
+        {
+          this.$message({
+            message: '加入愿望单成功',
+            type: 'success'
+          });
+          this.wishlistButton = '移出愿望单'
+        }
+        else
+        {
+          this.$message({
+            message: '移出愿望单成功',
+            type: 'success'
+          });
+          this.wishlistButton = '加入愿望单'
+        }
+        
+      },
     }
   };
   </script>

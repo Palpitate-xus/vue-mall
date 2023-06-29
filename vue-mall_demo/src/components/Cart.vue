@@ -21,8 +21,8 @@
       </el-table-column>
     </el-table>
     <div class="cart-summary">
-      <div>Total Items: {{ totalItems }}</div>
-      <div>Total Price: {{ totalPrice }}</div>
+      <div>总数量: {{ totalItems }}</div>
+      <div>总价格: {{ totalPrice }}</div>
       <el-button type="primary">结算</el-button>
     </div>
   </div>

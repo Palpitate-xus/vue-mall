@@ -10,6 +10,9 @@ import Login from '../components/Login'
 import ForgotPassword from '../components/ForgotPassword'
 import Register from '../components/Register'
 import Checkout from '../components/Checkout'
+import Payment from '../components/Payment'
+import PaymentSuccess from '../components/PaymentSuccess'
+import PaymentFail from '../components/PaymentFail'
 Vue.use(Router)
 
 export default new Router({
@@ -64,6 +67,22 @@ export default new Router({
       name: 'Checkout',
       component: Checkout
     },
+    {
+      path: '/payment',
+      name: 'Payment',
+      component: Payment
+    },
+    {
+      path: '/payment/success',
+      name: 'PaymentSuccess',
+      component: PaymentSuccess
+    },
+    {
+      path: '/payment/fail',
+      name: 'PaymentFail',
+      component: PaymentFail
+    },
+    
     // {
     //   path: '/helloworld',
     //   name: 'profile',

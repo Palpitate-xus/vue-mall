@@ -10,7 +10,7 @@
         <el-menu-item index="4-2">订单管理</el-menu-item>
         <el-menu-item index="4-3">地址管理</el-menu-item>
         <el-menu-item index="4-4">愿望单</el-menu-item>
-        <el-menu-item index="4-5">登陆</el-menu-item>
+        <el-menu-item index="4-5">登录</el-menu-item>
       </el-submenu>
     </el-menu>
     <router-view/>

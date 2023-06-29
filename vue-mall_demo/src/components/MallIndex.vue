@@ -35,11 +35,6 @@
           </el-col>
         </el-row>
       </div>
-  
-      <div class="announcement">
-        <h2>Announcement</h2>
-        <p>{{ announcement }}</p>
-      </div>
     </div>
   </template>
   

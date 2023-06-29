@@ -4,10 +4,10 @@
         <h3>登录</h3>
         <el-form ref="loginForm" :model="loginForm" :rules="loginRules" label-width="80px">
           <el-form-item label="用户名" prop="username">
-            <el-input v-model="loginForm.username" placeholder="Enter your username"></el-input>
+            <el-input v-model="loginForm.username" placeholder="请输入用户名"></el-input>
           </el-form-item>
           <el-form-item label="密码" prop="password">
-            <el-input type="password" v-model="loginForm.password" placeholder="Enter your password"></el-input>
+            <el-input type="password" v-model="loginForm.password" placeholder="请输入密码"></el-input>
           </el-form-item>
           <el-form-item class="button-container">
             <el-button @click="goToRegister" class="register-button">注册</el-button>
@@ -29,8 +29,8 @@
           password: '',
         },
         loginRules: {
-          username: [{ required: true, message: 'Please enter your username', trigger: 'blur' }],
-          password: [{ required: true, message: 'Please enter your password', trigger: 'blur' }],
+          username: [{ required: true, message: '用户名为空', trigger: 'blur' }],
+          password: [{ required: true, message: '密码为空', trigger: 'blur' }],
         },
       };
     },
@@ -40,7 +40,7 @@
           if (valid) {
             // 执行登录逻辑，例如发送请求到服务器验证用户信息
             // 成功登录后，可以跳转到其他页面
-            this.$router.push('/dashboard');
+            this.$router.push('/');
           } else {
             console.log('Form validation failed.');
           }

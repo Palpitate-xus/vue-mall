@@ -6,6 +6,10 @@ import PersonalCenter from '../components/PersonalCenter'
 import MallIndex from '../components/MallIndex'
 import OrderManagement from '../components/OrderManagment'
 import AddressManagement from '../components/AddressManagement'
+import Login from '../components/Login'
+import ForgotPassword from '../components/ForgotPassword'
+import Register from '../components/Register'
+import Checkout from '../components/Checkout'
 Vue.use(Router)
 
 export default new Router({
@@ -39,6 +43,26 @@ export default new Router({
       path: '/addressManagement',
       name: 'AddressManagement',
       component: AddressManagement
+    },
+    {
+      path: '/login',
+      name: 'Login',
+      component: Login
+    },
+    {
+      path: '/forgotPassword',
+      name: 'ForgotPassword',
+      component: ForgotPassword
+    },
+    {
+      path: '/register',
+      name: 'Register',
+      component: Register
+    },
+    {
+      path: '/checkout',
+      name: 'Checkout',
+      component: Checkout
     },
     // {
     //   path: '/helloworld',

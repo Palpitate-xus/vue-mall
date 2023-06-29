@@ -95,10 +95,12 @@ export default {
   },
   methods: {
   addToCart(product) {
-    console.log(this);
-    console.log(this.$store);
-    store.dispatch('cart/addProductToCart', product);
     console.log("add cart success");
+    this.$message({
+      message: '加入购物车成功',
+      type: 'success'
+    });
+    this.dialogVisible = false;
   },
   handleClose(done) {
         this.$confirm('确认关闭？')

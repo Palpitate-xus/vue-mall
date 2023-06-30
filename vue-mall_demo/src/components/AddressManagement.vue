@@ -9,8 +9,8 @@
         <el-table-column prop="address" label="收货地址"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button type="text" size="mini" @click="viewOrder(scope.row)">修改地址</el-button>
-            <el-button type="text" size="mini" @click="viewOrder(scope.row)">删除地址</el-button>
+            <el-button type="text" size="mini" @click="editAddress(scope.row)">修改地址</el-button>
+            <el-button type="text" size="mini" @click="removeFromAddress(scope.row)">删除地址</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -41,9 +41,12 @@
       };
     },
     methods: {
-      viewOrder(order) {
-        console.log(order.orderId);
+      removeFromAddress(item) {
+        const index = this.addresses.indexOf(item);
+        if (index !== -1) {
+          this.addresses.splice(index, 1);
       }
+    },
     }
   };
   </script>

@@ -1,7 +1,7 @@
 <template>
     <div class="login-container">
       <el-card class="login-card">
-        <h3>登录</h3>
+        <h3>{{ title }}</h3>
         <el-form ref="loginForm" :model="loginForm" :rules="loginRules" label-width="80px">
           <el-form-item label="用户名" prop="username">
             <el-input v-model="loginForm.username" placeholder="请输入用户名"></el-input>
@@ -20,10 +20,12 @@
   </template>
   
   <script>
+  import axiosInstance from '../api'
   export default {
     name: 'Login',
     data() {
       return {
+        title: '登录',
         loginForm: {
           username: '',
           password: '',
@@ -34,19 +36,56 @@
         },
       };
     },
+    mounted() {
+      this.isLogin();
+    },
     methods: {
-      login() {
-        this.$refs.loginForm.validate(valid => {
+      async login() {
+        await this.$refs.loginForm.validate(valid => {
           if (valid) {
-            // 执行登录逻辑，例如发送请求到服务器验证用户信息
-            // 成功登录后，可以跳转到其他页面
-            this.$router.push('/');
+            axiosInstance.request({
+            method: 'post',
+            url: 'users/login',
+            data: { 
+              username: this.loginForm.username,
+              password: this.loginForm.password,
+              user_type: 'customer'
+             }
+          })
+            .then(response => {
+              // 处理响应数据
+              window.localStorage.setItem('token', response.data.data.token);
+              console.log(response);
+              console.log(response.data);
+              this.$router.push('/');
+              this.$notify({
+                title: '登陆成功',
+                message: '欢迎来到在线电子商务平台',
+                type: 'success'
+              });
+            })
+            .catch(error => {
+              // 处理错误
+              console.error(error);
+            });
           } else {
             console.log('Form validation failed.');
           }
         });
       },
+      isLogin() {
+        let token = localStorage.getItem('token');
+        if(token !== null)
+        {
+          this.title = '您已登录，无需再次登录';
+          this.$notify.info({
+          title: '提示',
+          message: '您已登录，无需再次登录'
+        });
+        }
+      },
       goToRegister() {
+        
         // 跳转到注册页面
         this.$router.push('/register');
       },

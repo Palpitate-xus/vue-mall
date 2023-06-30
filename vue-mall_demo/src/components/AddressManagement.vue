@@ -1,12 +1,12 @@
 <template>
     <div class="profile">
       <h3>地址管理</h3>
-      <el-table :data="orderHistory" style="width: 100%">
-        <el-table-column prop="orderId" label="地址ID"></el-table-column>
-        <el-table-column prop="date" label="收货人"></el-table-column>
-        <el-table-column prop="totalAmount" label="省"></el-table-column>
-        <el-table-column prop="totalAmount" label="市"></el-table-column>
-        <el-table-column prop="totalAmount" label="收货地址"></el-table-column>
+      <el-table :data="addresses" style="width: 100%">
+        <el-table-column prop="addressId" label="地址ID"></el-table-column>
+        <el-table-column prop="receiver" label="收货人"></el-table-column>
+        <el-table-column prop="province" label="省"></el-table-column>
+        <el-table-column prop="city" label="市"></el-table-column>
+        <el-table-column prop="address" label="收货地址"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button type="text" size="mini" @click="viewOrder(scope.row)">修改地址</el-button>
@@ -22,24 +22,26 @@
     name: 'AddressManagement',
     data() {
       return {
-        orderHistory: [
+        addresses: [
           {
-            orderId: 'ORD001',
-            date: '2023-06-01',
-            totalAmount: '$99.99'
+            addressId: 'ADD001',
+            receiver: 'test receiver001',
+            province: 'test province001',
+            city: 'test city001',
+            address: 'test address001'
           },
           {
-            orderId: 'ORD002',
-            date: '2023-05-20',
-            totalAmount: '$49.99'
+            addressId: 'ADD002',
+            receiver: 'test receiver002',
+            province: 'test province002',
+            city: 'test city002',
+            address: 'test address002'
           },
-          // Add more order history items here...
         ]
       };
     },
     methods: {
       viewOrder(order) {
-        // Logic to view order details
         console.log(order.orderId);
       }
     }

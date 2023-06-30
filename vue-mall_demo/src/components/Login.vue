@@ -3,8 +3,8 @@
       <el-card class="login-card">
         <h3>{{ title }}</h3>
         <el-form ref="loginForm" :model="loginForm" :rules="loginRules" label-width="80px">
-          <el-form-item label="用户名" prop="username">
-            <el-input v-model="loginForm.username" placeholder="请输入用户名"></el-input>
+          <el-form-item label="邮箱" prop="email">
+            <el-input v-model="loginForm.email" placeholder="请输入邮箱"></el-input>
           </el-form-item>
           <el-form-item label="密码" prop="password">
             <el-input type="password" v-model="loginForm.password" placeholder="请输入密码"></el-input>
@@ -27,11 +27,14 @@
       return {
         title: '登录',
         loginForm: {
-          username: '',
+          email: '',
           password: '',
         },
         loginRules: {
-          username: [{ required: true, message: '用户名为空', trigger: 'blur' }],
+          email: [
+            { required: true, message: '邮箱为空', trigger: 'blur' },
+            { type: 'email', message: '邮箱格式错误', trigger: 'blur' },
+          ],
           password: [{ required: true, message: '密码为空', trigger: 'blur' }],
         },
       };
@@ -47,7 +50,7 @@
             method: 'post',
             url: 'users/login',
             data: { 
-              username: this.loginForm.username,
+              email: this.loginForm.email,
               password: this.loginForm.password,
               user_type: 'customer'
              }
@@ -70,7 +73,7 @@
               {
                 this.$notify({
                   title: '登录错误',
-                  message: '用户名或密码错误',
+                  message: '邮箱或密码错误',
                   type: 'error'
                 });
               }

@@ -13,6 +13,7 @@ import Checkout from '../components/Checkout'
 import Payment from '../components/Payment'
 import PaymentSuccess from '../components/PaymentSuccess'
 import PaymentFail from '../components/PaymentFail'
+import WishList from '../components/WishList'
 Vue.use(Router)
 
 export default new Router({
@@ -82,7 +83,11 @@ export default new Router({
       name: 'PaymentFail',
       component: PaymentFail
     },
-    
+    {
+      path: '/wishlist',
+      name: 'WishList',
+      component: WishList
+    },
     // {
     //   path: '/helloworld',
     //   name: 'profile',

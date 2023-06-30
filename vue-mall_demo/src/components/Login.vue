@@ -54,15 +54,27 @@
           })
             .then(response => {
               // 处理响应数据
-              window.localStorage.setItem('token', response.data.data.token);
-              console.log(response);
-              console.log(response.data);
-              this.$router.push('/');
-              this.$notify({
-                title: '登陆成功',
-                message: '欢迎来到在线电子商务平台',
-                type: 'success'
-              });
+              if(response.data.code == '200'){
+                window.localStorage.setItem('token', response.data.data.token);
+                console.log(window.localStorage.getItem('token'));
+                console.log(response);
+                console.log(response.data);
+                this.$router.push('/');
+                this.$notify({
+                  title: '登陆成功',
+                  message: '欢迎来到在线电子商务平台',
+                  type: 'success'
+                });
+              }
+              else
+              {
+                this.$notify({
+                  title: '登录错误',
+                  message: '用户名或密码错误',
+                  type: 'error'
+                });
+              }
+              
             })
             .catch(error => {
               // 处理错误

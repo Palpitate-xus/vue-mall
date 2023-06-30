@@ -11,7 +11,7 @@ axiosInstance.interceptors.request.use(
     // 从本地存储中获取 Token
     const token = localStorage.getItem('token') || '';
     // 将 Token 添加到请求的 Headers 中
-    config.headers.Authorization = `Bearer ${token}`;
+    config.headers.Authorization = `${token}`;
     return config;
   },
   error => {

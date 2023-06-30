@@ -19,17 +19,6 @@
         <span class="value">{{ user.last_login_date }}</span>
       </div>
     </div>
-    <h3>订单统计</h3>
-    <el-table :data="orderHistory" style="width: 100%">
-      <el-table-column prop="orderId" label="Order ID"></el-table-column>
-      <el-table-column prop="date" label="Date"></el-table-column>
-      <el-table-column prop="totalAmount" label="Total Amount"></el-table-column>
-      <el-table-column label="Actions">
-        <template slot-scope="scope">
-          <el-button type="text" size="mini" @click="viewOrder(scope.row)">View Details</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
   </div>
 </template>
   
@@ -46,19 +35,6 @@ export default {
         registration_date: '',
         last_login_date: '',
       },
-      orderHistory: [
-        {
-          orderId: 'ORD001',
-          date: '2023-06-01',
-          totalAmount: '$99.99'
-        },
-        {
-          orderId: 'ORD002',
-          date: '2023-05-20',
-          totalAmount: '$49.99'
-        },
-        // Add more order history items here...
-      ]
     };
   },
   mounted() {

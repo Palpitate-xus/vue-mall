@@ -4,15 +4,19 @@
     <div class="profile-info">
       <div class="info-item">
         <span class="label">用户名:</span>
-        <span class="value">{{ user.name }}</span>
+        <span class="value">{{ user.username }}</span>
       </div>
       <div class="info-item">
         <span class="label">邮箱:</span>
         <span class="value">{{ user.email }}</span>
       </div>
       <div class="info-item">
-        <span class="label">地址:</span>
-        <span class="value">{{ user.address }}</span>
+        <span class="label">注册时间:</span>
+        <span class="value">{{ user.registration_date }}</span>
+      </div>
+      <div class="info-item">
+        <span class="label">最后登录时间:</span>
+        <span class="value">{{ user.last_login_date }}</span>
       </div>
     </div>
     <h3>订单统计</h3>
@@ -30,14 +34,17 @@
 </template>
   
 <script>
+import axiosInstance from '../api';
 export default {
   name: 'PersonalCenter',
   data() {
     return {
       user: {
-        name: 'John Doe',
-        email: 'johndoe@example.com',
-        address: '123 Main St, City, Country'
+        user_id: '',
+        username: '',
+        email: '',
+        registration_date: '',
+        last_login_date: '',
       },
       orderHistory: [
         {
@@ -54,11 +61,47 @@ export default {
       ]
     };
   },
+  mounted() {
+    this.getUserInfo();
+  },
   methods: {
+    async getUserInfo() {
+      await axiosInstance.request({
+            method: 'post',
+            url: 'users/get_profile/',
+            data: {}
+          })
+            .then(response => {
+              // 处理响应数据
+              // this.$router.push('/');
+              // this.$notify({
+              //   title: '登陆成功',
+              //   message: '欢迎来到在线电子商务平台',
+              //   type: 'success'
+              // });
+              if(response.data.code == '200')
+              {
+                this.user = response.data.data;
+                console.log(this.user);
+              }
+              else
+              {
+                // this.$message({
+                //   message: response.data.message,
+                //   type: 'error'
+                // })
+              }
+              
+            })
+            .catch(error => {
+              // 处理错误
+              console.error(error);
+            });
+    },
     viewOrder(order) {
       // Logic to view order details
       console.log('View order:', order.orderId);
-    }
+    },
   }
 };
 </script>

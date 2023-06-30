@@ -2,19 +2,19 @@
   <div class="hello">
     <div class="product-list">
       <el-row :gutter="20">
-        <el-col v-for="product in products" :key="product.id" :span="6">
+        <el-col v-for="product in products" :key="product.product_id" :span="6">
           <el-card :body-style="{ padding: '20px' }">
             <div class="product-image">
-              <img :src="product.image" alt="Product Image" />
+              <img :src="product.product_image" alt="Product Image" />
             </div>
             <div class="product-info">
-              <div class="product-name">{{ product.name }}</div>
-              <div class="product-price">{{ product.price }}</div>
+              <div class="product-name">{{ product.product_name }}</div>
+              <div class="product-price">价格：{{ product.product_price }}</div>
               <div class="product-actions">
                 <el-button
                   type="primary"
                   icon="el-icon-shopping-cart-2"
-                  @click="dialogVisible = true"
+                  @click="showInfo(product)"
                 >
                   加入购物车
                 </el-button>
@@ -44,16 +44,16 @@
     <el-dialog title="商品详情" :visible.sync="dialogVisible" width="45%">
       <div class="product-details">
         <div class="product-info">
-          <img :src="product.imageUrl" :alt="product.name" class="product-image" />
+          <img :src="product.product_image" :alt="product.product_name" class="product-image" />
           <div class="product-details-info">
-            <h3>{{ product.name }}</h3>
-            <p>{{ product.description }}</p>
-            <p>Price: ${{ product.price }}</p>
-            <el-input-number v-model="quantity" :min="1" :max="10" :step="1"></el-input-number>
+            <h3>{{ product.product_name }}</h3>
+            <p>{{ product.product_description }}</p>
+            <p>价格：{{ product.product_price }}</p>
+            <p>库存：{{ product.stock_quantity }}</p>
+            <el-input-number v-model="quantity" :min="1" :max="product.stock_quantity" :step="1"></el-input-number>
           </div>
         </div>
       </div>
-
       <div slot="footer" class="dialog-footer">
         <el-button @click="addToCart">加入购物车</el-button>
         <el-button @click="dialogVisible = false">返回</el-button>
@@ -63,52 +63,99 @@
 </template>
 
 <script>
-import store from '../store'
+import axiosInstance from '../api';
 export default {
   name: 'Products',
   data () {
     return {
       dialogVisible: false,
-      products: [
-        {
-          id: 1,
-          name: 'Product 1',
-          price: '$19.99',
-          image: 'https://img14.360buyimg.com/n7/jfs/t1/199278/25/35719/62946/6491488bF12bc58c4/b35e427e0c681bfd.jpg'
-        },
-        {
-          id: 2,
-          name: 'Product 2',
-          price: '$29.99',
-          image: 'https://img12.360buyimg.com/n7/jfs/t1/168650/27/37797/57442/649a977eFb1d43aff/67de18b48ae18900.jpg'
-        },
-        // Add more products here...
-      ],
-      product: {
-        name: 'Product 1',
-        description: 'Product description',
-        price: 19.99,
-        imageUrl: 'https://img12.360buyimg.com/n7/jfs/t1/168650/27/37797/57442/649a977eFb1d43aff/67de18b48ae18900.jpg',
-      },
+      products: [],
+      product: {},
       quantity: 1,
     }
   },
+  mounted() {
+    this.getProductsList();
+  },
   methods: {
-  addToCart(product) {
-    console.log("add cart success");
-    this.$message({
-      message: '加入购物车成功',
-      type: 'success'
-    });
-    this.dialogVisible = false;
-  },
-  handleClose(done) {
-        this.$confirm('确认关闭？')
-          .then(_ => {
-            done();
+   async getProductsList() {
+      await axiosInstance.request({
+            method: 'post',
+            url: 'store/productlist/',
+            data: {}
           })
-          .catch(_ => {});
-  },
+            .then(response => {
+              // 处理响应数据
+              console.log(response);
+              console.log(response.data.data.products);
+              this.products = response.data.data.products;
+              // this.$router.push('/');
+              // this.$notify({
+              //   title: '登陆成功',
+              //   message: '欢迎来到在线电子商务平台',
+              //   type: 'success'
+              // });
+            })
+            .catch(error => {
+              // 处理错误
+              console.error(error);
+            });
+    },
+    async addToCart(product) {
+      console.log("add cart success");
+      await axiosInstance.request({
+            method: 'post',
+            url: 'cart/add_to_cart/',
+            data: {
+              product_id: this.product.product_id,
+              quantity: this.quantity,
+            }
+          })
+            .then(response => {
+              // 处理响应数据
+              console.log(response);
+              console.log(response.data.data);
+              // this.$router.push('/');
+              // this.$notify({
+              //   title: '登陆成功',
+              //   message: '欢迎来到在线电子商务平台',
+              //   type: 'success'
+              // });
+              if(response.data.code == '200')
+              {
+                this.$message({
+                  message: '加入购物车成功',
+                  type: 'success'
+                });
+                this.dialogVisible = false;
+                this.quantity = 1;
+              }
+              else
+              {
+                this.$message({
+                  message: response.data.message,
+                  type: 'error'
+                })
+              }
+              
+            })
+            .catch(error => {
+              // 处理错误
+              console.error(error);
+            });
+    },
+    showInfo(item) {
+      console.log(item);
+      this.product = item;
+      this.dialogVisible = true;
+    },
+    handleClose(done) {
+          this.$confirm('确认关闭？')
+            .then(_ => {
+              done();
+            })
+            .catch(_ => {});
+    },
 }
 }
 </script>

@@ -105,6 +105,14 @@ export default {
     async viewOrder(order) {
       console.log(order.order_id);
       await this.getOrderDetails(order);
+      console.log(this.orderItems);
+      if(!this.orderItems)
+      {
+        this.$message({
+          message: '订单信息获取错误',
+          type: 'error'
+        })
+      }
       this.dialogVisible = true;
     },
     closeDialog() {

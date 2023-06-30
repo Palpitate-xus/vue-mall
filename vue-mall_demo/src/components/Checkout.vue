@@ -3,8 +3,8 @@
     <h2>购物车结算</h2>
     <div v-if="cartItems.length">
       <el-table :data="cartItems" style="width: 100%">
-        <el-table-column prop="name" label="商品名称"></el-table-column>
-        <el-table-column prop="price" label="商品价格"></el-table-column>
+        <el-table-column prop="product_name" label="商品名称"></el-table-column>
+        <el-table-column prop="product_price" label="商品价格"></el-table-column>
         <el-table-column prop="quantity" label="购买数量"></el-table-column>
         <el-table-column label="小计">
           <template slot-scope="{ row }">
@@ -27,66 +27,89 @@
 </template>
 
 <script>
-import axios from 'axios';
-
+import axiosInstance from '../api';
 export default {
   name: 'Checkout',
   data() {
     return {
-      cartItems: [{
-          id: 1,
-          name: 'Product 1',
-          price: 19.99,
-          quantity: 2
-        },
-        {
-          id: 2,
-          name: 'Product 2',
-          price: 29.99,
-          quantity: 1
-        },],
+      cartItems: [],
     };
   },
   computed: {
     totalPrice() {
       return this.cartItems.reduce(
-        (total, item) => total + item.price * item.quantity,
+        (total, item) => total + item.product_price * item.quantity,
         0
       );
     },
   },
   created() {
-    this.fetchCartItems();
+    this.fetchCartList();
   },
   methods: {
-    fetchCartItems() {
-      axios.get('/api/cart')
-        .then(response => {
-          this.cartItems = response.data;
-        })
-        .catch(error => {
-          console.error('Failed to fetch cart items:', error);
-        });
+    async fetchCartList() {
+      await axiosInstance.request({
+            method: 'post',
+            url: 'cart/get_user_cart/',
+            data: {}
+          })
+            .then(response => {
+              // 处理响应数据
+              console.log(response);
+              console.log(response.data.data);
+              if(response.data.code == '200')
+              {
+                this.cartItems = response.data.data.shoppingcart;
+                console.log(this.cartItems);
+              }
+              else
+              {
+                this.$message({
+                  message: response.data.message,
+                  type: 'error'
+                })
+              }
+              
+            })
+            .catch(error => {
+              // 处理错误
+              console.error(error);
+            });
     },
     calculateSubtotal(item) {
-      return (item.price * item.quantity).toFixed(2);
+      return (item.product_price * item.quantity).toFixed(2);
     },
     async placeOrder() {
-      // Place order logic
-      // ...
-      // Clear cart after placing the order
-      await axios.delete('/api/cart')
-        .then(() => {
-          alert('Order placed successfully!');
-          this.cartItems = [];
-        })
-        .catch(error => {
-          console.error('Failed to place order:', error);
-        });
-      this.$router.push('./payment')
+      await axiosInstance.request({
+            method: 'post',
+            url: 'orders/create_order/',
+            data: {
+              order_details: this.cartItems,
+            }
+          })
+            .then(response => {
+              // 处理响应数据
+              console.log(response);
+              console.log(response.data.data);
+              if(response.data.code == '200')
+              {
+                this.$router.push('./payment')
+              }
+              else
+              {
+                this.$message({
+                  message: response.data.message,
+                  type: 'error'
+                })
+              }
+            })
+            .catch(error => {
+              // 处理错误
+              console.error(error);
+            });
     },
     returnBack() {
-      this.$router.push('./cart')
+      this.$router.push('./cart');
     },
   },
 };

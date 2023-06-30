@@ -1,6 +1,7 @@
 <template>
     <div class="profile">
       <h3>地址管理</h3>
+      <el-button>添加地址</el-button>
       <el-table :data="addresses" style="width: 100%">
         <el-table-column prop="addressId" label="地址ID"></el-table-column>
         <el-table-column prop="receiver" label="收货人"></el-table-column>

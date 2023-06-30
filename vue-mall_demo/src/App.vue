@@ -11,6 +11,7 @@
         <el-menu-item index="4-3">地址管理</el-menu-item>
         <el-menu-item index="4-4">愿望单</el-menu-item>
         <el-menu-item index="4-5">登录</el-menu-item>
+        <el-menu-item index="4-6">注销</el-menu-item>
       </el-submenu>
     </el-menu>
     <router-view/>
@@ -29,30 +30,50 @@ export default {
     handleSelect (key, keyPath) {
       console.log(key, keyPath)
       if (key === '1') {
-        this.$router.push('/')
-      }
+        this.$router.push('/');
+      };
       if (key === '2') {
-        this.$router.push('/products')
-      }
+        this.$router.push('/products');
+      };
       if (key === '3') {
-        this.$router.push('/cart')
-      }
+        this.$router.push('/cart');
+      };
       if (key === '4-1') {
-        this.$router.push('/personalCenter')
+        this.$router.push('/personalCenter');
         // console.log("go to personalCenter");
-      }
+      };
       if (key === '4-2') {
-        this.$router.push('/orderManagement')
-      }
+        this.$router.push('/orderManagement');
+      };
       if (key === '4-3') {
-        this.$router.push('/addressManagement')
-      }
+        this.$router.push('/addressManagement');
+      };
       if (key === '4-4') {
-        this.$router.push('/wishlist')
-      }
+        this.$router.push('/wishlist');
+      };
       if (key === '4-5') {
-        this.$router.push('/login')
-      }
+        this.$router.push('/login');
+      };
+      if (key === '4-6') {
+        const token = localStorage.getItem('token');
+        if(token !== null)
+        {
+          window.localStorage.removeItem('token');
+          this.$notify({
+            title: '注销成功',
+            // message: '这是一条成功的提示消息',
+            type: 'success'
+          });
+          this.$router.push('/');
+        }
+        else
+        {
+          this.$notify.error({
+            title: '注销错误',
+            message: '当前未登录'
+        });
+        }
+      };
     }
   }
 }

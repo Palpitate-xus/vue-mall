@@ -25,6 +25,7 @@
   </template>
   
   <script>
+  import axiosInstance from '../api';
   export default {
     name: 'Register',
     data() {
@@ -58,7 +59,32 @@
           if (valid) {
             // 执行注册逻辑，例如发送请求到服务器保存用户信息
             // 注册成功后，可以跳转到登录页面
-            this.$router.push('/login');
+            axiosInstance.request({
+            method: 'post',
+            url: 'users/register',
+            data: { 
+              username: this.registerForm.username,
+              password: this.registerForm.password,
+              email: this.registerForm.email,
+              user_type: 'customer'
+             }
+          })
+            .then(response => {
+              // 处理响应数据
+              // window.localStorage.setItem('token', response.data.data.token);
+              console.log(response);
+              console.log(response.data);
+              this.$router.push('/login');
+              this.$notify({
+                title: '注册成功',
+                message: '欢迎来到在线电子商务平台',
+                type: 'success'
+              });
+            })
+            .catch(error => {
+              // 处理错误
+              console.error(error);
+            });
           } else {
             console.log('Form validation failed.');
           }

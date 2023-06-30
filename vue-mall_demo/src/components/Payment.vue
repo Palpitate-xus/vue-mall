@@ -34,7 +34,6 @@
     },
     methods: {
       generateQRCode() {
-        // Make API request to generate the QR code URL
         axios.get('/api/payment/generateQrCode')
           .then(response => {
             this.qrCodeUrl = response.data.qrCodeUrl;
@@ -44,15 +43,12 @@
           });
       },
       checkPaymentStatus() {
-        // Make API request to check payment status
         axios.get('/api/payment/checkStatus')
           .then(response => {
             if (response.data.paymentStatus === 'completed') {
               this.paymentCompleted = true;
-              // Redirect to payment success page
               this.$router.push('/payment-success');
             } else {
-              // Payment not completed, check again after a delay
               setTimeout(this.checkPaymentStatus, 3000);
             }
           })
@@ -62,7 +58,6 @@
       },
     },
     mounted() {
-      // Start checking payment status after component is mounted
       this.checkPaymentStatus();
     },
   };

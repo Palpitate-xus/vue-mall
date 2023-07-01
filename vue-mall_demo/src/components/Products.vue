@@ -18,7 +18,11 @@
                 >
                   加入购物车
                 </el-button>
-                <el-button type="text" icon="el-icon-star-on">加入愿望单</el-button>
+                <el-button
+                  type="text"
+                  icon="el-icon-star-on"
+                  @click="addToWish(product)"
+                  >加入愿望单</el-button>
               </div>
             </div>
           </el-card>
@@ -102,47 +106,59 @@ export default {
             });
     },
     async addToCart(product) {
-      console.log("add cart success");
-      await axiosInstance.request({
-            method: 'post',
-            url: 'cart/add_to_cart/',
-            data: {
-              product_id: this.product.product_id,
-              quantity: this.quantity,
-            }
-          })
-            .then(response => {
-              // 处理响应数据
-              console.log(response);
-              console.log(response.data.data);
-              // this.$router.push('/');
-              // this.$notify({
-              //   title: '登陆成功',
-              //   message: '欢迎来到在线电子商务平台',
-              //   type: 'success'
-              // });
-              if(response.data.code == '200')
-              {
-                this.$message({
-                  message: '加入购物车成功',
-                  type: 'success'
-                });
-                this.dialogVisible = false;
-                this.quantity = 1;
+      token = window.localStorage.getItem('token');
+      if(token !== null){
+        console.log("add cart success");
+        await axiosInstance.request({
+              method: 'post',
+              url: 'cart/add_to_cart/',
+              data: {
+                product_id: this.product.product_id,
+                quantity: this.quantity,
               }
-              else
-              {
-                this.$message({
-                  message: response.data.message,
-                  type: 'error'
-                })
-              }
-              
             })
-            .catch(error => {
-              // 处理错误
-              console.error(error);
-            });
+              .then(response => {
+                // 处理响应数据
+                console.log(response);
+                console.log(response.data.data);
+                // this.$router.push('/');
+                // this.$notify({
+                //   title: '登陆成功',
+                //   message: '欢迎来到在线电子商务平台',
+                //   type: 'success'
+                // });
+                if(response.data.code == '200')
+                {
+                  this.$message({
+                    message: '加入购物车成功',
+                    type: 'success'
+                  });
+                  this.dialogVisible = false;
+                  this.quantity = 1;
+                }
+                else
+                {
+                  this.$message({
+                    message: response.data.message,
+                    type: 'error'
+                  })
+                }
+              })
+              .catch(error => {
+                // 处理错误
+                console.error(error);
+              });
+      }
+      else {
+        this.$router.push('/login');
+        this.$notify({
+          message: '您还未登录',
+          type: 'info',
+        })
+      }
+    },
+    async addToWish(item) {
+      console.log(item.product_id);
     },
     showInfo(item) {
       console.log(item);

@@ -5,6 +5,14 @@
       <el-table-column prop="order_id" label="订单号"></el-table-column>
       <el-table-column prop="order_time" label="时间"></el-table-column>
       <el-table-column prop="payment_status" label="支付状态"></el-table-column>
+      <!-- <el-table-column prop="order_status" label="订单状态"></el-table-column> -->
+      <el-table-column label="订单状态" show-overflow-tooltip>
+        <template #default="{ row }">
+          <el-tag>
+            {{ row.order_status }}
+          </el-tag>
+        </template>
+      </el-table-column>
       <el-table-column prop="total_amount" label="总金额"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">

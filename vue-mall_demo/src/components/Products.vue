@@ -29,6 +29,7 @@
         </el-col>
       </el-row>
     </div>
+    <el-empty description="当前无商品" v-if="products.length==0"></el-empty>
     <el-dialog title="商品详情" :visible.sync="dialogVisible" width="45%">
       <div class="product-details">
         <div class="product-info">

@@ -6,15 +6,6 @@
         </el-carousel-item>
       </el-carousel>
   
-      <!-- <el-row class="category">
-        <el-col :span="6" v-for="category in categories" :key="category.id">
-          <div class="category-item">
-            <img :src="category.image" alt="Category Image" class="category-image" />
-            <span class="category-name">{{ category.name }}</span>
-          </div>
-        </el-col>
-      </el-row> -->
-  
       <div class="recommendation">
         <h2>精选好物</h2>
         <el-row :gutter="20">

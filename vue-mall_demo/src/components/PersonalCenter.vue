@@ -38,13 +38,19 @@ export default {
     };
   },
   mounted() {
-    token = window.localStorage.getItem('token');
+    const token = window.localStorage.getItem('token');
+    console.log(token);
     if(token !== null){
       this.getUserInfo();
     }
     else {
       this.$router.push('/login');
-    }
+      this.$notify({
+        title: '未登录',
+        message: '请先登录在线电子商务平台',
+        type: 'error'
+      });
+    };
   },
   methods: {
     async getUserInfo() {

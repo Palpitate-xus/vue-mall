@@ -106,7 +106,7 @@ export default {
             });
     },
     async addToCart(product) {
-      token = window.localStorage.getItem('token');
+      const token = window.localStorage.getItem('token');
       if(token !== null){
         console.log("add cart success");
         await axiosInstance.request({

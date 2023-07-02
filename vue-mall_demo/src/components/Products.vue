@@ -29,22 +29,6 @@
         </el-col>
       </el-row>
     </div>
-    <!-- <el-dialog
-      title="加入购物车"
-      :visible.sync="dialogVisible"
-      width="75%"
-      :before-close="handleClose">
-      <span>请选择购买数量</span>
-      <el-form>
-        <el-form-item label="购买数量">
-          <el-input></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-      </span>
-    </el-dialog> -->
     <el-dialog title="商品详情" :visible.sync="dialogVisible" width="45%">
       <div class="product-details">
         <div class="product-info">
@@ -67,6 +51,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 import axiosInstance from '../api';
 export default {
   name: 'Products',
@@ -121,12 +106,6 @@ export default {
                 // 处理响应数据
                 console.log(response);
                 console.log(response.data.data);
-                // this.$router.push('/');
-                // this.$notify({
-                //   title: '登陆成功',
-                //   message: '欢迎来到在线电子商务平台',
-                //   type: 'success'
-                // });
                 if(response.data.code == '200')
                 {
                   this.$message({
@@ -159,6 +138,47 @@ export default {
     },
     async addToWish(item) {
       console.log(item.product_id);
+      const token = window.localStorage.getItem('token');
+      if(token !== null){
+        console.log("add wishlist success");
+        await axiosInstance.request({
+              method: 'post',
+              url: 'users/add_to_wishlist',
+              data: {
+                product_id: item.product_id,
+              }
+            })
+              .then(response => {
+                // 处理响应数据
+                console.log(response);
+                console.log(response.data.data);
+                if(response.data.code == '200')
+                {
+                  this.$message({
+                    message: '加入愿望单成功',
+                    type: 'success'
+                  });
+                }
+                else
+                {
+                  this.$message({
+                    message: response.data.message,
+                    type: 'error'
+                  })
+                }
+              })
+              .catch(error => {
+                // 处理错误
+                console.error(error);
+              });
+      }
+      else {
+        this.$router.push('/login');
+        this.$notify({
+          message: '您还未登录',
+          type: 'info',
+        })
+      }
     },
     showInfo(item) {
       console.log(item);
@@ -176,7 +196,6 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .product-list {
   margin: 15px;

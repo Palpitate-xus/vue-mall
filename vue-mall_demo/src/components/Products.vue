@@ -78,12 +78,6 @@ export default {
               console.log(response);
               console.log(response.data.data.products);
               this.products = response.data.data.products;
-              // this.$router.push('/');
-              // this.$notify({
-              //   title: '登陆成功',
-              //   message: '欢迎来到在线电子商务平台',
-              //   type: 'success'
-              // });
             })
             .catch(error => {
               // 处理错误

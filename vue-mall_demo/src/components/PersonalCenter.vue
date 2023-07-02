@@ -38,7 +38,13 @@ export default {
     };
   },
   mounted() {
-    this.getUserInfo();
+    token = window.localStorage.getItem('token');
+    if(token !== null){
+      this.getUserInfo();
+    }
+    else {
+      this.$router.push('/login');
+    }
   },
   methods: {
     async getUserInfo() {

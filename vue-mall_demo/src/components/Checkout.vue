@@ -12,7 +12,17 @@
           </template>
         </el-table-column>
       </el-table>
-      <div>选择收货地址：</div>
+      <div class="address">
+        <p>选择收货地址：</p>
+        <el-select v-model="value" filterable placeholder="请选择地址">
+        <el-option
+          v-for="item in options"
+          :key="item.id"
+          :label="item.concatenatedAddress"
+          :value="item.concatenatedAddress">
+        </el-option>
+      </el-select>
+      </div>
       <div class="total">
         总计: {{ totalPrice }}
       </div>
@@ -39,6 +49,8 @@ export default {
   data() {
     return {
       cartItems: [],
+      options: [],
+        value: ''
     };
   },
   computed: {
@@ -51,6 +63,7 @@ export default {
   },
   created() {
     this.fetchCartList();
+    this.fetchAddresses();
   },
   methods: {
     async fetchCartList() {
@@ -75,7 +88,6 @@ export default {
                   type: 'error'
                 })
               }
-              
             })
             .catch(error => {
               // 处理错误
@@ -91,6 +103,7 @@ export default {
             url: 'orders/create_order/',
             data: {
               order_details: this.cartItems,
+              shipping_address: this.value,
             }
           })
             .then(response => {
@@ -99,10 +112,43 @@ export default {
               // console.log(response.data.data);
               if(response.data.code == '200')
               {
-
                 this.$refs['payment'].qrCodeUrl = "data:image/image;base64," + response.data.data.qr_code;
                 console.log(this.$refs['payment'].qrCodeUrl);
                 this.$refs['payment'].dialogVisible = true;
+              }
+              else
+              {
+                this.$message({
+                  message: response.data.message,
+                  type: 'error'
+                })
+              }
+            })
+            .catch(error => {
+              // 处理错误
+              console.error(error);
+            });
+    },
+    async fetchAddresses() {
+      await axiosInstance.request({
+            method: 'post',
+            url: 'users/addresslist/',
+            data: {}
+          })
+            .then(response => {
+              // 处理响应数据
+              console.log(response);
+              console.log(response.data.data);
+              if(response.data.code == '200')
+              {
+                const concatenatedAddresses = response.data.data.address.map(address => {
+                const concatenatedAddress = `${address.recipient_name}, ${address.phone_number}, ${address.province}, ${address.city}, ${address.street}`;
+                return {
+                  id: address.address_id,
+                  concatenatedAddress
+                };
+              });
+              this.options = concatenatedAddresses;
               }
               else
               {
@@ -133,6 +179,11 @@ export default {
   margin-top: 20px;
   text-align: right;
   font-weight: bold;
+}
+
+.address {
+  margin-top: 20px;
+  text-align: left;
 }
 
 .actions {

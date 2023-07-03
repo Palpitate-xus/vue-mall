@@ -69,11 +69,6 @@ export default new Router({
       component: Checkout
     },
     {
-      path: '/payment',
-      name: 'Payment',
-      component: Payment
-    },
-    {
       path: '/payment/success',
       name: 'PaymentSuccess',
       component: PaymentSuccess

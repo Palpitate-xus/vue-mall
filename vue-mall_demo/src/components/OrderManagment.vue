@@ -3,7 +3,7 @@
     <h3>订单</h3>
     <el-table :data="orderHistory" style="width: 100%">
       <el-table-column prop="order_id" label="订单号"></el-table-column>
-      <el-table-column prop="order_time" label="时间"></el-table-column>
+      <el-table-column prop="order_time" label="下单时间"></el-table-column>
       <el-table-column label="支付状态" show-overflow-tooltip>
         <template #default="{ row }">
           <el-tag :type="row.payment_status === 'unpaid' ? 'danger' : 'success'">
@@ -42,127 +42,129 @@
         <el-empty>订单中没有商品</el-empty>
       </div>
     </el-dialog>
+    <payment ref="payment"></payment>
   </div>
 </template>
   
 <script>
 import axiosInstance from '../api';
+import Payment from './Payment.vue';
 export default {
-  name: 'OrderManagement',
-  data() {
-    return {
-      dialogVisible: false,
-      orderHistory: [],
-      orderItems: [],
-    };
-  },
-  mounted(){
-    const token = window.localStorage.getItem('token');
-    console.log(token);
-    if(token !== null){
-      this.getOrderList();
-    }
-    else {
-      this.$router.push('/login');
-      this.$notify({
-        title: '未登录',
-        message: '请先登录在线电子商务平台',
-        type: 'error'
-      });
-    };
-    
-  },
-  methods: {
-    async getOrderList() {
-      await axiosInstance.request({
-            method: 'post',
-            url: 'orders/get_order_list/',
-            data: {}
-          })
-            .then(response => {
-              // 处理响应数据
-              console.log(response);
-              console.log(response.data.data);
-              if(response.data.code == '200')
-              {
-                this.orderHistory = response.data.data.orders;
-              }
-              else
-              {
-                this.$message({
-                  message: response.data.message,
-                  type: 'error'
-                })
-              }
-            })
-            .catch(error => {
-              // 处理错误
-              console.error(error);
-            });
+    name: "OrderManagement",
+    components: {
+      Payment
     },
-    async getOrderDetails(item) {
-      await axiosInstance.request({
-            method: 'post',
-            url: 'orders/get_order_details/',
-            data: {
-              order_id: item.order_id,
+    data() {
+        return {
+            dialogVisible: false,
+            orderHistory: [],
+            orderItems: [],
+        };
+    },
+    mounted() {
+        const token = window.localStorage.getItem("token");
+        console.log(token);
+        if (token !== null) {
+            this.getOrderList();
+        }
+        else {
+            this.$router.push("/login");
+            this.$notify({
+                title: "未登录",
+                message: "请先登录在线电子商务平台",
+                type: "error"
+            });
+        }
+        ;
+    },
+    methods: {
+        async getOrderList() {
+            await axiosInstance.request({
+                method: "post",
+                url: "orders/get_order_list/",
+                data: {}
+            })
+                .then(response => {
+                // 处理响应数据
+                console.log(response);
+                console.log(response.data.data);
+                if (response.data.code == "200") {
+                    this.orderHistory = response.data.data.orders;
+                }
+                else {
+                    this.$message({
+                        message: response.data.message,
+                        type: "error"
+                    });
+                }
+            })
+                .catch(error => {
+                // 处理错误
+                console.error(error);
+            });
+        },
+        async getOrderDetails(item) {
+            await axiosInstance.request({
+                method: "post",
+                url: "orders/get_order_details/",
+                data: {
+                    order_id: item.order_id,
+                }
+            })
+                .then(response => {
+                // 处理响应数据
+                console.log(response);
+                console.log(response.data.data);
+                if (response.data.code == "200") {
+                    this.orderItems = response.data.data.orderdetails;
+                    console.log(this.orderItems);
+                }
+                else {
+                    this.$message({
+                        message: response.data.message,
+                        type: "error"
+                    });
+                }
+            })
+                .catch(error => {
+                // 处理错误
+                console.error(error);
+            });
+        },
+        async viewOrder(order) {
+            console.log(order.order_id);
+            await this.getOrderDetails(order);
+            console.log(this.orderItems);
+            if (!this.orderItems) {
+                this.$message({
+                    message: "订单信息获取错误",
+                    type: "error"
+                });
             }
-          })
-            .then(response => {
-              // 处理响应数据
-              console.log(response);
-              console.log(response.data.data);
-              if(response.data.code == '200')
-              {
-                this.orderItems = response.data.data.orderdetails;
-                console.log(this.orderItems);
-              }
-              else
-              {
-                this.$message({
-                  message: response.data.message,
-                  type: 'error'
-                })
-              }
-            })
-            .catch(error => {
-              // 处理错误
-              console.error(error);
-            });
+            this.dialogVisible = true;
+        },
+        closeDialog() {
+            this.dialogVisible = false;
+        },
+        payOrder(item) {
+            this.$refs['payment'].generateQRCode(item);
+            this.$refs['payment'].dialogVisible = true;
+            console.log(item.order_id);
+        },
+        getResult(item) {
+            console.log(item);
+            switch (item.order_status) {
+                case "Pending":
+                    return { label: "待处理", type: "info" };
+                case "Confirmed":
+                    return { label: "已发货", type: "warning" };
+                case "Finished":
+                    return { label: "已完成", type: "success" };
+                default:
+                    return { label: "订单信息获取错误", type: "danger" };
+            }
+        }
     },
-    async viewOrder(order) {
-      console.log(order.order_id);
-      await this.getOrderDetails(order);
-      console.log(this.orderItems);
-      if(!this.orderItems)
-      {
-        this.$message({
-          message: '订单信息获取错误',
-          type: 'error'
-        })
-      }
-      this.dialogVisible = true;
-    },
-    closeDialog() {
-      this.dialogVisible = false;
-    },
-    payOrder(item) {
-      console.log(item.order_id);
-    },
-    getResult(item) {
-      console.log(item);
-      switch (item.order_status) {
-        case 'Pending':
-          return {label: '待处理', type: 'info'};
-        case 'Confirmed':
-          return {label: '已发货', type: 'warning'};
-        case 'Finished':
-          return {label: '已完成', type: 'success'};
-        default:
-          return {label: '订单信息获取错误', type: 'danger'};
-      }
-    }
-  }
 };
 </script>
   

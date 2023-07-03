@@ -23,13 +23,18 @@
     <div v-else>
       <p>No items in the cart.</p>
     </div>
+    <payment ref="payment"></payment>
   </div>
 </template>
 
 <script>
 import axiosInstance from '../api';
+import Payment from './Payment';
 export default {
   name: 'Checkout',
+  components: {
+    Payment
+  },
   data() {
     return {
       cartItems: [],
@@ -89,11 +94,14 @@ export default {
           })
             .then(response => {
               // 处理响应数据
-              console.log(response);
-              console.log(response.data.data);
+              // console.log(response);
+              // console.log(response.data.data);
               if(response.data.code == '200')
               {
-                this.$router.push('./payment')
+
+                this.$refs['payment'].qrCodeUrl = "data:image/image;base64," + response.data.data.qr_code;
+                console.log(this.$refs['payment'].qrCodeUrl);
+                this.$refs['payment'].dialogVisible = true;
               }
               else
               {

@@ -4,12 +4,18 @@
     <el-table :data="orderHistory" style="width: 100%">
       <el-table-column prop="order_id" label="订单号"></el-table-column>
       <el-table-column prop="order_time" label="时间"></el-table-column>
-      <el-table-column prop="payment_status" label="支付状态"></el-table-column>
+      <el-table-column label="支付状态" show-overflow-tooltip>
+        <template #default="{ row }">
+          <el-tag :type="row.payment_status === 'unpaid' ? 'danger' : 'success'">
+            {{ row.payment_status === 'unpaid' ? '未支付' : '已支付'}}
+          </el-tag>
+        </template>
+      </el-table-column>
       <!-- <el-table-column prop="order_status" label="订单状态"></el-table-column> -->
       <el-table-column label="订单状态" show-overflow-tooltip>
         <template #default="{ row }">
-          <el-tag>
-            {{ row.order_status }}
+          <el-tag :type="getResult(row).type">
+            {{ getResult(row).label }}
           </el-tag>
         </template>
       </el-table-column>
@@ -17,6 +23,7 @@
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button type="text" size="mini" @click="viewOrder(scope.row)">查看详情</el-button>
+          <el-button type="text" size="mini" @click="payOrder(scope.row)" v-if="scope.row.payment_status ===  'unpaid'">支付订单</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -138,6 +145,22 @@ export default {
     },
     closeDialog() {
       this.dialogVisible = false;
+    },
+    payOrder(item) {
+      console.log(item.order_id);
+    },
+    getResult(item) {
+      console.log(item);
+      switch (item.order_status) {
+        case 'Pending':
+          return {label: '待处理', type: 'info'};
+        case 'Confirmed':
+          return {label: '已发货', type: 'warning'};
+        case 'Finished':
+          return {label: '已完成', type: 'success'};
+        default:
+          return {label: '订单信息获取错误', type: 'danger'};
+      }
     }
   }
 };

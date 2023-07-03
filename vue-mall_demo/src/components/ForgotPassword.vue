@@ -65,8 +65,8 @@
       };
     },
     methods: {
-      resetPassword() {
-        this.$refs.forgotPasswordForm.validate(valid => {
+      async resetPassword() {
+        await this.$refs.forgotPasswordForm.validate(valid => {
           if (valid) {
             // 执行重置密码逻辑，发送请求到服务器重置密码
             // 重置密码成功后，可以提示用户并跳转到登录页面

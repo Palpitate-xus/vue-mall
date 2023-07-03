@@ -6,50 +6,54 @@
           <div class="wish-details">
             <img :src="wish.image" alt="Wish Image" class="wish-image" />
             <div class="wish-info">
-              <h3 class="wish-name">{{ wish.name }}</h3>
-              <p class="wish-price">{{ wish.price }}</p>
-              <p class="wish-time">添加时间:{{ wish.time }}</p>
+              <h3 class="wish-name">{{ wish.product_name }}</h3>
+              <p class="wish-price">{{ wish.product_price }}</p>
+              <!-- <p class="wish-time">添加时间:{{ wish.time }}</p> -->
             </div>
           </div>
-        <span class="add-to-cart" @click="addToCart(index)">加入购物车</span>
-        <span class="delete-wish" @click="deleteWish(index)">删除</span>
+        <span class="add-to-cart" @click="showInfo(wish)">加入购物车</span>
+        <span class="delete-wish" @click="deleteWish(wish, index)">删除</span>
       </div>
     </div>
+    <el-empty description="当前无商品" v-if="wishList.length==0"></el-empty>
+    <el-dialog title="商品详情" :visible.sync="dialogVisible" width="45%">
+      <div class="product-details">
+        <div class="product-info">
+          <img :src="product.product_image" :alt="product.product_name" />
+          <div class="product-details-info">
+            <h3>{{ product.product_name }}</h3>
+            <p>{{ product.product_description }}</p>
+            <p>价格：{{ product.product_price }}</p>
+            <p>库存：{{ product.stock_quantity }}</p>
+            <el-input-number v-model="quantity" :min="1" :max="product.stock_quantity" :step="1"></el-input-number>
+          </div>
+        </div>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="addToCart">加入购物车</el-button>
+        <el-button @click="dialogVisible = false">返回</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
   
 <script>
+import axiosInstance from '../api';
 export default {
   name: 'WishList',
   data() {
     return {
-      wishList: [
-        {
-          name: '商品1',
-          image: 'https://img11.360buyimg.com/seckillcms/s280x280_jfs/t1/114234/2/38348/930930/6497e774F1d039a56/e6d41b090c7b8962.png.avif',
-          time: '2023-06-28',
-          price: '$19.99'
-        },
-        {
-          name: '商品2',
-          image: 'https://img11.360buyimg.com/seckillcms/s280x280_jfs/t20260624/108888/14/39198/29659/6497aeb3Fe63b1023/488533e55b34696e.jpg.avif',
-          time: '2023-06-29',
-          price: '$29.99'
-        },
-        {
-          name: '商品3',
-          image: 'https://img12.360buyimg.com/seckillcms/s280x280_jfs/t20260624/198360/31/36743/71191/6497ef30F39e398a2/fc319351710f4267.png.avif',
-          time: '2023-06-29',
-          price: '$39.99'
-        }
-      ]
+      wishList: [],
+      product: {},
+      dialogVisible: false,
+      quantity: 1,
     };
   },
   mounted() {
     const token = window.localStorage.getItem('token');
     console.log(token);
     if(token !== null){
-      this.getUserInfo();
+      this.fetchWishList();
     }
     else {
       this.$router.push('/login');
@@ -61,9 +65,115 @@ export default {
     };
   },
   methods: {
-    deleteWish(index) {
-      this.wishList.splice(index, 1);
-    }
+    showInfo(item) {
+      this.dialogVisible = true;
+      this.product = item;
+    },
+    async deleteWish(item, index) {
+      await axiosInstance.request({
+                method: "post",
+                url: "users/remove_from_wishlist/",
+                data: {
+                  product_id: item.product_id,
+                }
+            })
+                .then(response => {
+                // 处理响应数据
+                console.log(response);
+                console.log(response.data.data);
+                if (response.data.code == "200") {
+                    // this.orderHistory = response.data.data.orders;
+                    this.wishList.splice(index, 1);
+                    this.fetchWishList();
+                    this.$message({
+                        message: "删除成功",
+                        type: "success"
+                    });
+                }
+                else {
+                    this.$message({
+                        message: response.data.message,
+                        type: "error"
+                    });
+                }
+            })
+              .catch(error => {
+              // 处理错误
+              console.error(error);
+            });
+    },
+    async fetchWishList() {
+      await axiosInstance.request({
+                method: "post",
+                url: "users/wishlist",
+                data: {}
+            })
+                .then(response => {
+                // 处理响应数据
+                console.log(response);
+                console.log(response.data.data);
+                if (response.data.code == "200") {
+                    // this.orderHistory = response.data.data.orders;
+                    this.wishList = response.data.data.products;
+                }
+                else {
+                    this.$message({
+                        message: response.data.message,
+                        type: "error"
+                    });
+                }
+            })
+              .catch(error => {
+              // 处理错误
+              console.error(error);
+            });
+    },
+    async addToCart() {
+      const token = window.localStorage.getItem('token');
+      if(token !== null){
+        console.log("add cart success");
+        await axiosInstance.request({
+              method: 'post',
+              url: 'cart/add_to_cart/',
+              data: {
+                product_id: this.product.product_id,
+                quantity: this.quantity,
+              }
+            })
+              .then(response => {
+                // 处理响应数据
+                console.log(response);
+                console.log(response.data.data);
+                if(response.data.code == '200')
+                {
+                  this.$message({
+                    message: '加入购物车成功',
+                    type: 'success'
+                  });
+                  this.dialogVisible = false;
+                  this.quantity = 1;
+                }
+                else
+                {
+                  this.$message({
+                    message: response.data.message,
+                    type: 'error'
+                  })
+                }
+              })
+              .catch(error => {
+                // 处理错误
+                console.error(error);
+              });
+      }
+      else {
+        this.$router.push('/login');
+        this.$notify({
+          message: '您还未登录',
+          type: 'info',
+        })
+      }
+    },
   }
 };
 </script>
@@ -78,7 +188,11 @@ export default {
 .page-title {
   text-align: center;
 }
-  
+ 
+.product-list {
+  margin: 15px;
+}
+
 .wish-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));

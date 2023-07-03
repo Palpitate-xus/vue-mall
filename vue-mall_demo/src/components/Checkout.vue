@@ -12,6 +12,7 @@
           </template>
         </el-table-column>
       </el-table>
+      <div>选择收货地址：</div>
       <div class="total">
         总计: {{ totalPrice }}
       </div>
@@ -21,7 +22,7 @@
       </div>
     </div>
     <div v-else>
-      <p>No items in the cart.</p>
+      <el-empty description="购物车是空的"></el-empty>
     </div>
     <payment ref="payment"></payment>
   </div>

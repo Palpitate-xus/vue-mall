@@ -50,7 +50,7 @@ export default {
     return {
       cartItems: [],
       options: [],
-        value: ''
+      value: '',
     };
   },
   computed: {
@@ -98,7 +98,14 @@ export default {
       return (item.product_price * item.quantity).toFixed(2);
     },
     async placeOrder() {
-      await axiosInstance.request({
+      if(this.value === ''){
+        this.$message({
+          message: '未选择地址',
+          type: 'error',
+        })
+      }
+      else{
+            await axiosInstance.request({
             method: 'post',
             url: 'orders/create_order/',
             data: {
@@ -128,6 +135,8 @@ export default {
               // 处理错误
               console.error(error);
             });
+      }
+
     },
     async fetchAddresses() {
       await axiosInstance.request({

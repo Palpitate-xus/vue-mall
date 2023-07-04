@@ -42,24 +42,7 @@ import axiosInstance from '../api';
             console.error('Failed to generate QR code:', error);
           });
       },
-      // checkPaymentStatus() {
-      //   axiosInstance.get('/api/payment/checkStatus')
-      //     .then(response => {
-      //       if (response.data.paymentStatus === 'completed') {
-      //         this.paymentCompleted = true;
-      //         this.$router.push('/payment-success');
-      //       } else {
-      //         setTimeout(this.checkPaymentStatus, 3000);
-      //       }
-      //     })
-      //     .catch(error => {
-      //       console.error('Failed to check payment status:', error);
-      //     });
-      // },
     },
-    // mounted() {
-    //   this.checkPaymentStatus();
-    // },
   };
   </script>
   

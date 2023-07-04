@@ -55,7 +55,8 @@
     </div>
   </template>
   
-  <script>
+<script>
+  import axiosInstance from '../api';
   export default {
     name: 'MallIndex',
     data() {
@@ -63,10 +64,10 @@
         dialogVisible: false,
         wishlistButton: '加入愿望单',
         product: {
-        name: 'Product 1',
-        description: 'Product description',
-        price: 29.99,
-        imageUrl: 'https://img20.360buyimg.com/seckillcms/s280x280_jfs/t20260619/113833/3/39445/53972/64914cffF631562d4/4be78f2804813246.png.avif',
+          name: 'Product 1',
+          description: 'Product description',
+          price: 29.99,
+          imageUrl: 'https://img20.360buyimg.com/seckillcms/s280x280_jfs/t20260619/113833/3/39445/53972/64914cffF631562d4/4be78f2804813246.png.avif',
         },
       quantity: 1,
         slides: [
@@ -92,19 +93,6 @@
           },
           // Add more slides here...
         ],
-        categories: [
-          {
-            id: 1,
-            name: 'Category 1',
-            image: 'path/to/category1.jpg'
-          },
-          {
-            id: 2,
-            name: 'Category 2',
-            image: 'path/to/category2.jpg'
-          },
-          // Add more categories here...
-        ],
         recommendedProducts: [
           {
             id: 1,
@@ -121,6 +109,9 @@
           // Add more recommended products here...
         ],
       };
+    },
+    mounted() {
+      this.getRecommend()
     },
     methods: {
       showInfo() {
@@ -153,11 +144,28 @@
         }
         
       },
+      async getRecommend() {
+        await axiosInstance.request({
+              method: 'post',
+              url: 'users/get_recomm/',
+              data: {}
+            })
+              .then(response => {
+                // 处理响应数据
+                console.log(response);
+                console.log(response.data.data.products);
+                this.recommendedProducts = response.data.data.products;
+              })
+              .catch(error => {
+                // 处理错误
+                console.error(error);
+              });
+      },
     }
   };
-  </script>
+</script>
   
-  <style>
+<style>
   .home {
     margin: 20px;
   }
@@ -225,5 +233,5 @@
   .announcement h2 {
     margin-bottom: 10px;
   }
-  </style>
+</style>
   

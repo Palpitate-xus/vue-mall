@@ -160,7 +160,7 @@ export default {
             switch (item.order_status) {
                 case "Pending":
                     return { label: "待处理", type: "info" };
-                case "Confirmed":
+                case "has shipped":
                     return { label: "已发货", type: "warning" };
                 case "Finished":
                     return { label: "已完成", type: "success" };

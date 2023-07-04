@@ -8,7 +8,6 @@
             <div class="wish-info">
               <h3 class="wish-name">{{ wish.product_name }}</h3>
               <p class="wish-price">{{ wish.product_price }}</p>
-              <!-- <p class="wish-time">添加时间:{{ wish.time }}</p> -->
             </div>
           </div>
         <span class="add-to-cart" @click="showInfo(wish)">加入购物车</span>

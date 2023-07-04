@@ -4,7 +4,7 @@
       <div class="wish-list">
         <div v-for="(wish, index) in wishList" :key="index" class="wish-item">
           <div class="wish-details">
-            <img :src="wish.image" alt="Wish Image" class="wish-image" />
+            <img :src="wish.product_image" alt="Wish Image" class="wish-image" />
             <div class="wish-info">
               <h3 class="wish-name">{{ wish.product_name }}</h3>
               <p class="wish-price">{{ wish.product_price }}</p>

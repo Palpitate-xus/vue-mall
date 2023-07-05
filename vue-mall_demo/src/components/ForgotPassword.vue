@@ -27,7 +27,7 @@
           <el-form-item class="button-container">
             <el-button type="primary" @click="resetPassword">重置密码</el-button>
             <el-button @click="goToLogin">登陆</el-button>
-          </el-form-item>
+          </el-form-item> 
         </el-form>
       </el-card>
     </div>

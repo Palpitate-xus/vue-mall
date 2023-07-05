@@ -25,7 +25,7 @@
         <template slot-scope="scope">
           <el-button type="text" size="mini" @click="viewOrder(scope.row)">查看详情</el-button>
           <el-button type="text" size="mini" @click="payOrder(scope.row)" v-if="scope.row.payment_status ===  'unpaid'">支付订单</el-button>
-          <el-button type="text" size="mini" @click="confirmReceived(scope.row)" v-if="scope.row.status ===  'has shipped'">确认收货</el-button>
+          <el-button type="text" size="mini"  @click="confirmReceived(scope.row)"  v-if="scope.row.order_status === 'has shipped'">确认收货</el-button>
         </template>
       </el-table-column>
     </el-table>

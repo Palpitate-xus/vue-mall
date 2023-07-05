@@ -9,24 +9,24 @@
       <div class="recommendation">
         <h2>精选好物</h2>
         <el-row :gutter="20">
-          <el-col v-for="product in recommendedProducts" :key="product.id" :span="6">
+          <el-col v-for="product in recommendedProducts" :key="product.product_id" :span="6">
             <el-card :body-style="{ padding: '20px' }">
               <div class="product-image">
-                <img :src="product.image" alt="Product Image" />
+                <img :src="product.product_image" alt="Product Image" />
               </div>
               <div class="product-info">
-                <div class="product-name">{{ product.name }}</div>
-                <div class="product-price">{{ product.price }}</div>
+                <div class="product-name">{{ product.product_name }}</div>
+                <div class="product-price">{{ product.product_price }}</div>
                 <div class="product-actions">
                       <el-button
                         type="primary"
                         icon="el-icon-shopping-cart-2"
-                        @click="showInfo"
+                        @click="showInfo(product)"
                       >加入购物车</el-button>
                   <el-button
                     type="text"
                     icon="el-icon-star-on"
-                    @click="addToWishlist"
+                    @click="addToWishlist(product)"
                   >{{ wishlistButton }}</el-button>
                 </div>
               </div>
@@ -37,11 +37,11 @@
       <el-dialog title="商品详情" :visible.sync="dialogVisible" width="45%">
       <div class="product-details">
         <div class="product-info">
-          <img :src="product.imageUrl" :alt="product.name" class="product-image" />
+          <img :src="product.product_image" :alt="product.name" class="product-image" />
           <div class="product-details-info">
-            <h3>{{ product.name }}</h3>
-            <p>{{ product.description }}</p>
-            <p>Price: ${{ product.price }}</p>
+            <h3>{{ product.product_name }}</h3>
+            <p>{{ product.product_description }}</p>
+            <p>价格: {{ product.product_price }}</p>
             <el-input-number v-model="quantity" :min="1" :max="10" :step="1"></el-input-number>
           </div>
         </div>
@@ -63,13 +63,8 @@
       return {
         dialogVisible: false,
         wishlistButton: '加入愿望单',
-        product: {
-          name: 'Product 1',
-          description: 'Product description',
-          price: 29.99,
-          imageUrl: 'https://img20.360buyimg.com/seckillcms/s280x280_jfs/t20260619/113833/3/39445/53972/64914cffF631562d4/4be78f2804813246.png.avif',
-        },
-      quantity: 1,
+        product: {},
+        quantity: 1,
         slides: [
           {
             id: 1,
@@ -91,58 +86,108 @@
             id: 5,
             image: 'https://img11.360buyimg.com/pop/s1180x940_jfs/t1/190492/13/7300/66647/60c06365E18831313/add1aa7d07d3d0e9.jpg.avif'
           },
-          // Add more slides here...
         ],
-        recommendedProducts: [
-          {
-            id: 1,
-            name: 'Product 1',
-            price: '$19.99',
-            image: 'https://img20.360buyimg.com/seckillcms/s280x280_jfs/t20260619/113833/3/39445/53972/64914cffF631562d4/4be78f2804813246.png.avif'
-          },
-          {
-            id: 2,
-            name: 'Product 2',
-            price: '$29.99',
-            image: 'https://img11.360buyimg.com/jdcms/s300x300_jfs/t1/119607/27/23674/49661/63e8e9a7Fb5b5085c/1e2675c7cbfcd03a.jpg.avif'
-          },
-          // Add more recommended products here...
-        ],
+        recommendedProducts: [],
       };
     },
     mounted() {
       this.getRecommend()
     },
     methods: {
-      showInfo() {
+      showInfo(item) {
+        this.product = item
         this.dialogVisible = true;
         console.log(this.visible);
       },
-      addToCart(item) {
-        this.$message({
-          message: '加入购物车成功',
-          type: 'success'
-        });
-        this.dialogVisible = false;
+      async addToCart() {
+        const token = window.localStorage.getItem('token');
+        if(token !== null){
+          console.log("add cart success");
+          await axiosInstance.request({
+                method: 'post',
+                url: 'cart/add_to_cart/',
+                data: {
+                  product_id: this.product.product_id,
+                  quantity: this.quantity,
+                }
+              })
+                .then(response => {
+                  // 处理响应数据
+                  console.log(response);
+                  console.log(response.data.data);
+                  if(response.data.code == '200')
+                  {
+                    this.$message({
+                      message: '加入购物车成功',
+                      type: 'success'
+                    });
+                    this.dialogVisible = false;
+                    this.quantity = 1;
+                  }
+                  else
+                  {
+                    this.$message({
+                      message: response.data.message,
+                      type: 'error'
+                    })
+                  }
+                })
+                .catch(error => {
+                  // 处理错误
+                  console.error(error);
+                });
+        }
+        else {
+          this.$router.push('/login');
+          this.$notify({
+            message: '您还未登录',
+            type: 'info',
+          })
+        }
       },
-      addToWishlist(item) {
-        if(this.wishlistButton == '加入愿望单')
-        {
-          this.$message({
-            message: '加入愿望单成功',
-            type: 'success'
-          });
-          this.wishlistButton = '移出愿望单'
+      async addToWish(item) {
+        console.log(item.product_id);
+        const token = window.localStorage.getItem('token');
+        if(token !== null){
+          console.log("add wishlist success");
+          await axiosInstance.request({
+                method: 'post',
+                url: 'users/add_to_wishlist',
+                data: {
+                  product_id: item.product_id,
+                }
+              })
+                .then(response => {
+                  // 处理响应数据
+                  console.log(response);
+                  console.log(response.data.data);
+                  if(response.data.code == '200')
+                  {
+                    this.$message({
+                      message: '加入愿望单成功',
+                      type: 'success'
+                    });
+                  }
+                  else
+                  {
+                    this.$message({
+                      message: response.data.message,
+                      type: 'error'
+                    })
+                  }
+                })
+                .catch(error => {
+                  // 处理错误
+                  console.error(error);
+                });
         }
-        else
-        {
-          this.$message({
-            message: '移出愿望单成功',
-            type: 'success'
-          });
-          this.wishlistButton = '加入愿望单'
+        else {
+          this.$router.push('/login');
+          this.$notify({
+            message: '您还未登录',
+            type: 'info',
+          })
         }
-        
       },
       async getRecommend() {
         await axiosInstance.request({

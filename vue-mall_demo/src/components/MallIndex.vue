@@ -65,33 +65,13 @@
         wishlistButton: '加入愿望单',
         product: {},
         quantity: 1,
-        slides: [
-          {
-            id: 1,
-            image: 'https://imgcps.jd.com/ling-cubic/ling4/lab/amZzL3QxLzEzMDg0NS8zLzM2NDk2LzExMDc4My82NDYwOWU3MEZhYjJlZjg0Yi9kNWFlZGZmZWMzZThlYTZlLnBuZw/5Lqs6YCJ5aW96LSn/5L2g5YC85b6X5oul5pyJ/1635188868130873346/cr/s/q.jpg'
-          },
-          {
-            id: 2,
-            image: 'https://imgcps.jd.com/ling-cubic/ling4/lab/amZzL3QxLzQ5MTQzLzI4LzE3MDM2LzIxOTg4OS82MTM4NDhkNkU2MDY1ZWM5OC9iM2I4ZWE1ODE5MmQzNmI0LnBuZw/5Lqs6YCJ5aW96LSn/5L2g5YC85b6X5oul5pyJ/1635188868130873346/cr/s/q.jpg'
-          },
-          {
-            id: 3,
-            image: 'https://img12.360buyimg.com/pop/s1180x940_jfs/t1/221198/1/25542/78251/64560d2aFcbbb64f4/96669230fcbaf0a9.png.avif'
-          },
-          {
-            id: 4,
-            image: 'https://imgcps.jd.com/img-cubic/creative_server_cia_jdcloud/v2/2000366/100048189548/FocusFullshop/CkNqZnMvdDEvMjIxMDMzLzM4LzI5NzQ0LzY5MTIwLzY0ODRjYmUyRjQ5NjQyMDM2LzZlYjY4NjhiNjBiZjdjMWIucG5nEgk0LXR5XzBfNTUwAjjui3pCEwoP5Z2a5p6c5oqV5b2x5py6EAFCFgoS5a6e5oOg5LiN5a656ZSZ6L-HEAJCEAoM56uL5Y2z5oqi6LStEAZCBwoD5oqiEAdY7PDY2vQC/cr/s/q.jpg'
-          },
-          {
-            id: 5,
-            image: 'https://img11.360buyimg.com/pop/s1180x940_jfs/t1/190492/13/7300/66647/60c06365E18831313/add1aa7d07d3d0e9.jpg.avif'
-          },
-        ],
+        slides: [],
         recommendedProducts: [],
       };
     },
     mounted() {
       this.getRecommend()
+      this.fetchBanners()
     },
     methods: {
       showInfo(item) {
@@ -200,6 +180,23 @@
                 console.log(response);
                 console.log(response.data.data.products);
                 this.recommendedProducts = response.data.data.products;
+              })
+              .catch(error => {
+                // 处理错误
+                console.error(error);
+              });
+      },
+      async fetchBanners() {
+        await axiosInstance.request({
+              method: 'post',
+              url: 'store/banner/',
+              data: {}
+            })
+              .then(response => {
+                // 处理响应数据
+                console.log(response);
+                console.log(response.data.data);
+                this.slides = response.data.data.image;
               })
               .catch(error => {
                 // 处理错误

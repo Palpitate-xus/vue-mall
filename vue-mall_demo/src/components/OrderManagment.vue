@@ -154,6 +154,34 @@ export default {
         },
         async confirmReceived(item) {
           console.log(item.order_id);
+          await axiosInstance.request({
+                method: "post",
+                url: "users/accept_order/",
+                data: {
+                    order_id: item.order_id,
+                }
+            })
+                .then(response => {
+                // 处理响应数据
+                console.log(response);
+                console.log(response.data.data);
+                if (response.data.code == "200") {
+                    this.$message({
+                      message: response.data.message,
+                      type: 'success'
+                    })
+                }
+                else {
+                    this.$message({
+                        message: response.data.message,
+                        type: "error"
+                    });
+                }
+            })
+                .catch(error => {
+                // 处理错误
+                console.error(error);
+            });
         },
         getResult(item) {
             console.log(item);
@@ -162,12 +190,12 @@ export default {
                     return { label: "待处理", type: "info" };
                 case "has shipped":
                     return { label: "已发货", type: "warning" };
-                case "Finished":
+                case "Accepted":
                     return { label: "已完成", type: "success" };
                 default:
                     return { label: "订单信息获取错误", type: "danger" };
             }
-        }
+        },
     },
 };
 </script>

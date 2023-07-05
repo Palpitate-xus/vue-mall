@@ -4,6 +4,7 @@
     <el-table :data="orderHistory" style="width: 100%">
       <el-table-column prop="order_id" label="订单号"></el-table-column>
       <el-table-column prop="order_time" label="下单时间"></el-table-column>
+      <el-table-column prop="shipping_address" label="收货地址"></el-table-column>
       <el-table-column label="支付状态" show-overflow-tooltip>
         <template #default="{ row }">
           <el-tag :type="row.payment_status === 'unpaid' ? 'danger' : 'success'">

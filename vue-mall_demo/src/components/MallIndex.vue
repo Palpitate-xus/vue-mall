@@ -145,7 +145,7 @@
           })
         }
       },
-      async addToWish(item) {
+      async addToWishlist(item) {
         console.log(item.product_id);
         const token = window.localStorage.getItem('token');
         if(token !== null){

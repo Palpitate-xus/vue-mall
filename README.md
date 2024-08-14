@@ -1,6 +1,6 @@
 # vue-ui
 
-> A Vue.js project
+> A Online Mall based on Vue.js
 
 ## Build Setup
 
